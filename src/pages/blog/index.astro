@@ -15,80 +15,77 @@ const posts = (await getCollection('blog')).sort(
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={`Blog — ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
 		<style>
 			main {
-				width: 960px;
+				width: 720px;
+				max-width: calc(100% - 2em);
+				margin: 0 auto;
+				padding: 2em 1em 4em;
+			}
+			.page-title {
+				font-size: 2.2em;
+				margin-bottom: 0.25em;
+				font-weight: 700;
+			}
+			.page-subtitle {
+				color: rgb(140, 140, 160);
+				margin-bottom: 2em;
+				font-size: 1em;
 			}
 			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
 				list-style-type: none;
 				margin: 0;
 				padding: 0;
 			}
 			ul li {
-				width: calc(50% - 1rem);
+				margin-bottom: 2rem;
+				padding-bottom: 2rem;
+				border-bottom: 1px solid rgb(30, 30, 40);
 			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
+			ul li:last-child {
+				border-bottom: none;
 			}
 			ul li a {
 				display: block;
+				border-bottom: none;
 			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
+			ul li a:hover h3 {
+				color: var(--accent);
+			}
+			ul li img {
+				margin-bottom: 0.75rem;
+				border-radius: 8px;
+				width: 100%;
+				height: auto;
+			}
+			h3 {
+				margin: 0 0 0.25rem 0;
+				font-size: 1.4rem;
+				color: rgb(200, 200, 220);
+				transition: color 0.2s;
 			}
 			.date {
 				margin: 0;
-				color: rgb(var(--gray));
+				color: rgb(100, 100, 120);
+				font-size: 0.85rem;
 			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
+			.excerpt {
+				margin: 0.5rem 0 0 0;
+				color: rgb(140, 140, 160);
+				font-size: 0.95rem;
+				line-height: 1.5;
 			}
 			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
+				.page-title { font-size: 1.8em; }
 			}
 		</style>
 	</head>
 	<body>
 		<Header />
 		<main>
+			<h1 class="page-title">Notes</h1>
+			<p class="page-subtitle">{posts.length} post{posts.length !== 1 ? 's' : ''}</p>
 			<section>
 				<ul>
 					{
@@ -98,10 +95,11 @@ const posts = (await getCollection('blog')).sort(
 									{post.data.heroImage && (
 										<Image width={720} height={360} src={post.data.heroImage} alt="" />
 									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
+									<h3>{post.data.title}</h3>
+									<p class="date"><FormattedDate date={post.data.pubDate} /></p>
+									{post.data.description && (
+										<p class="excerpt">{post.data.description}</p>
+									)}
 								</a>
 							</li>
 						))

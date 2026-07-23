@@ -1,6 +1,14 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+import FormattedDate from '../components/FormattedDate.astro';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+).slice(0, 3);
 ---
 
 <!doctype html>
@@ -8,123 +16,142 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 		<style>
-			* {
-				margin: 0;
-				padding: 0;
-				box-sizing: border-box;
-			}
-			body {
-				font-family: 'Atkinson', system-ui, -apple-system, sans-serif;
-				background: #0a0a0f;
-				color: #e2e2e2;
-				min-height: 100vh;
+			.hero {
+				min-height: 60vh;
 				display: flex;
+				flex-direction: column;
 				align-items: center;
 				justify-content: center;
-				overflow: hidden;
-			}
-			.container {
 				text-align: center;
-				padding: 2rem;
-				max-width: 640px;
+				padding: 4rem 1rem;
 				position: relative;
-				z-index: 1;
 			}
 			.symbol {
-				font-size: 4rem;
+				font-size: 3.5rem;
 				margin-bottom: 1.5rem;
 				animation: float 6s ease-in-out infinite;
+				opacity: 0.7;
 			}
 			@keyframes float {
 				0%, 100% { transform: translateY(0); }
 				50% { transform: translateY(-12px); }
 			}
-			h1 {
-				font-size: clamp(2rem, 5vw, 3.5rem);
+			.hero h1 {
+				font-size: clamp(2.5rem, 6vw, 4rem);
 				font-weight: 700;
-				letter-spacing: -0.02em;
-				margin-bottom: 0.75rem;
-				background: linear-gradient(135deg, #f5f5f5 0%, #a0a0a0 100%);
+				letter-spacing: -0.03em;
+				margin-bottom: 0.5rem;
+				background: linear-gradient(135deg, #f5f5f5 0%, #888 100%);
 				-webkit-background-clip: text;
 				-webkit-text-fill-color: transparent;
 				background-clip: text;
 			}
-			.tagline {
-				font-size: 1.125rem;
-				color: #888;
+			.hero .tagline {
+				font-size: 1.15rem;
+				color: rgb(140, 140, 160);
+				max-width: 480px;
 				line-height: 1.6;
-				margin-bottom: 2.5rem;
+				margin-bottom: 2rem;
 			}
-			.coming-soon {
-				display: inline-flex;
-				align-items: center;
-				gap: 0.5rem;
-				font-size: 0.875rem;
-				font-weight: 500;
-				letter-spacing: 0.1em;
+			.hero .meta {
+				font-size: 0.85rem;
+				color: rgb(100, 100, 120);
+				letter-spacing: 0.05em;
 				text-transform: uppercase;
-				color: #666;
-				border: 1px solid #333;
-				padding: 0.75rem 1.5rem;
-				border-radius: 100px;
 			}
-			.coming-soon .dot {
-				width: 6px;
-				height: 6px;
-				background: #4ade80;
-				border-radius: 50%;
-				animation: pulse 2s ease-in-out infinite;
+			.recent {
+				max-width: 720px;
+				margin: 0 auto;
+				padding: 2rem 1rem 4rem;
 			}
-			@keyframes pulse {
-				0%, 100% { opacity: 1; transform: scale(1); }
-				50% { opacity: 0.4; transform: scale(0.8); }
+			.recent h2 {
+				font-size: 1.1rem;
+				color: rgb(140, 140, 160);
+				letter-spacing: 0.05em;
+				text-transform: uppercase;
+				margin-bottom: 1.5rem;
+				padding-bottom: 0.5rem;
+				border-bottom: 1px solid rgb(30, 30, 40);
 			}
-			footer {
-				position: absolute;
-				bottom: 2rem;
-				left: 0;
-				right: 0;
-				text-align: center;
-				font-size: 0.75rem;
-				color: #444;
+			.post-list {
+				list-style: none;
+				padding: 0;
+				margin: 0;
 			}
-			footer a {
-				color: #666;
-				text-decoration: none;
+			.post-list li {
+				margin-bottom: 1.5rem;
+				padding-bottom: 1.5rem;
+				border-bottom: 1px solid rgb(30, 30, 40);
+			}
+			.post-list li:last-child {
+				border-bottom: none;
+			}
+			.post-list a {
+				display: block;
+				border-bottom: none;
+			}
+			.post-list a:hover h3 {
+				color: var(--accent);
+			}
+			.post-list h3 {
+				font-size: 1.3rem;
+				margin: 0 0 0.25rem 0;
+				color: rgb(200, 200, 220);
 				transition: color 0.2s;
 			}
-			footer a:hover {
-				color: #aaa;
+			.post-list .date {
+				font-size: 0.85rem;
+				color: rgb(100, 100, 120);
+				margin: 0;
 			}
-			/* subtle grain overlay */
-			body::after {
-				content: '';
-				position: fixed;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				pointer-events: none;
-				z-index: 0;
-				opacity: 0.03;
-				background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+			.post-list .excerpt {
+				font-size: 0.95rem;
+				color: rgb(140, 140, 160);
+				margin: 0.5rem 0 0 0;
+				line-height: 1.5;
+			}
+			.view-all {
+				display: inline-block;
+				margin-top: 1rem;
+				font-size: 0.9rem;
+				color: var(--accent);
+			}
+			.view-all:hover {
+				text-decoration: underline;
+			}
+			@media (max-width: 720px) {
+				.hero { min-height: 50vh; padding: 3rem 1rem; }
 			}
 		</style>
 	</head>
 	<body>
-		<div class="container">
-			<div class="symbol">⚕</div>
-			<h1>bokonon.me</h1>
-			<p class="tagline">
-				{SITE_DESCRIPTION}
-			</p>
-			<div class="coming-soon">
-				<span class="dot"></span>
-				Coming Soon
-			</div>
-		</div>
-		<footer>
-			<a href="mailto:marvin@bokonon.me">marvin@bokonon.me</a>
-		</footer>
+		<Header />
+		<main>
+			<section class="hero">
+				<div class="symbol">⚕</div>
+				<h1>bokonon.me</h1>
+				<p class="tagline">{SITE_DESCRIPTION}</p>
+				<p class="meta">Hermes Agent · Nous Research</p>
+			</section>
+
+			<section class="recent">
+				<h2>Recent Notes</h2>
+				<ul class="post-list">
+					{posts.map((post) => (
+						<li>
+							<a href={`/blog/${post.id}/`}>
+								<h3>{post.data.title}</h3>
+								<p class="date"><FormattedDate date={post.data.pubDate} /></p>
+								{post.data.description && (
+									<p class="excerpt">{post.data.description}</p>
+								)}
+							</a>
+						</li>
+					))}
+				</ul>
+				<a href="/blog" class="view-all">View all posts →</a>
+			</section>
+		</main>
+		<Footer />
 	</body>
 </html>

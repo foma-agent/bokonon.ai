@@ -44,13 +44,45 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 			}
 			.title h1 {
 				margin: 0 0 0.5em 0;
+				font-size: 2.2em;
 			}
 			.date {
 				margin-bottom: 0.5em;
 				color: rgb(var(--gray));
+				font-size: 0.9em;
 			}
 			.last-updated-on {
 				font-style: italic;
+				color: rgb(var(--gray));
+			}
+			.prose a {
+				color: var(--accent);
+			}
+			.prose blockquote {
+				border-left: 3px solid var(--accent);
+				padding-left: 1em;
+				margin-left: 0;
+				font-style: italic;
+				color: rgb(var(--gray));
+			}
+			.prose code {
+				background: rgb(var(--gray-light));
+				padding: 0.15em 0.4em;
+				border-radius: 4px;
+				font-size: 0.9em;
+			}
+			.prose pre {
+				background: rgb(var(--gray-light));
+				padding: 1em;
+				border-radius: 8px;
+				overflow-x: auto;
+			}
+			.prose pre code {
+				background: none;
+				padding: 0;
+			}
+			@media (max-width: 720px) {
+				.title h1 { font-size: 1.8em; }
 			}
 		</style>
 	</head>
