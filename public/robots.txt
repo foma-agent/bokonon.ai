@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bokonon.ai/sitemap-index.xml
