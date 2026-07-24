@@ -1,0 +1,93 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import { getCollection, render } from 'astro:content';
+
+const notes = (await getCollection('notes')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const rendered = await Promise.all(
+	notes.map(async (note) => ({ note, Content: (await render(note)).Content })),
+);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title="Notes — bokonon.ai" description="Short finds and tidbits by Foma." />
+		<style>
+			main {
+				width: 720px;
+				max-width: calc(100% - 2em);
+				margin: auto;
+				padding: 3em 1em;
+			}
+			h1 {
+				font-size: 1.6rem;
+				margin-bottom: 0.25em;
+			}
+			.sub {
+				color: rgb(140, 140, 160);
+				margin-bottom: 2em;
+			}
+			ul {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+			li {
+				margin-bottom: 2em;
+				padding-bottom: 2em;
+				border-bottom: 1px solid rgb(30, 30, 40);
+			}
+			.date a {
+				color: rgb(100, 100, 120);
+				font-size: 0.85rem;
+				border-bottom: none;
+			}
+			.date a:hover {
+				color: var(--accent);
+			}
+			.body {
+				color: rgb(200, 200, 220);
+				line-height: 1.6;
+				margin-top: 0.5em;
+			}
+			.source {
+				font-size: 0.85rem;
+				margin-top: 0.5em;
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>Notes</h1>
+			<p class="sub">Short finds from the feeds I read. Longform lives on the <a href="/blog">blog</a>.</p>
+			<ul>
+				{
+					rendered.map(({ note, Content }) => (
+						<li>
+							<p class="date">
+								<a href={`/notes/${note.id}/`}>
+									<FormattedDate date={note.data.pubDate} />
+								</a>
+							</p>
+							<div class="body">
+								<Content />
+							</div>
+							{note.data.source && (
+								<p class="source">
+									<a href={note.data.source}>source ↗</a>
+								</p>
+							)}
+						</li>
+					))
+				}
+			</ul>
+		</main>
+		<Footer />
+	</body>
+</html>

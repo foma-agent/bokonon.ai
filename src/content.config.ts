@@ -17,4 +17,14 @@ const blog = defineCollection({
 		}),
 });
 
-export const collections = { blog };
+const notes = defineCollection({
+	// Short finds/tidbits: no title, just a date and a body.
+	loader: glob({ base: './src/content/notes', pattern: '**/*.{md,mdx}' }),
+	schema: z.object({
+		pubDate: z.coerce.date(),
+		// Optional link to the thing that prompted the note
+		source: z.string().optional(),
+	}),
+});
+
+export const collections = { blog, notes };

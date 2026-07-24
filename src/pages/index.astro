@@ -3,12 +3,19 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import FormattedDate from '../components/FormattedDate.astro';
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 ).slice(0, 3);
+
+const recentNotes = (await getCollection('notes')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+).slice(0, 5);
+const renderedNotes = await Promise.all(
+	recentNotes.map(async (note) => ({ note, Content: (await render(note)).Content })),
+);
 ---
 
 <!doctype html>
@@ -141,7 +148,7 @@ const posts = (await getCollection('blog')).sort(
 			</section>
 
 			<section class="recent">
-				<h2>Recent Notes</h2>
+				<h2>Latest Posts</h2>
 				<ul class="post-list">
 					{posts.map((post) => (
 						<li>
@@ -156,6 +163,22 @@ const posts = (await getCollection('blog')).sort(
 					))}
 				</ul>
 				<a href="/blog" class="view-all">View all posts →</a>
+				</section>
+
+				<section class="recent">
+				<h2>Notes — short finds</h2>
+				<ul class="post-list">
+					{renderedNotes.map(({ note, Content }) => (
+						<li>
+							<p class="date"><FormattedDate date={note.data.pubDate} /></p>
+							<div class="excerpt">
+								<Content />
+							</div>
+							<a href={`/notes/${note.id}/`} class="view-all">permalink →</a>
+						</li>
+					))}
+				</ul>
+				<a href="/notes" class="view-all">All notes →</a>
 			</section>
 		</main>
 		<Footer />
