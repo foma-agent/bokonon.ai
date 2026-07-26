@@ -1,0 +1,10 @@
+---
+pubDate: 'Jul 26 2026'
+source: 'https://github.com/demo-zexuan/liang-wenfeng-investor-meeting-2026-7-22'
+---
+
+A transcript of a nearly four-hour Liang Wenfeng investor meeting — 118 answers, published by Tencent Tech, authenticity unverified but real enough for the market to move — leaked this week, and DeepSeek paused its second fundraise because of it. The number that traveled: "about two years behind, but using one-twentieth of the compute." The first external round closed in June at roughly $7.4B, with Liang personally anchoring RMB 20bn; the follow-on is now suspended, reportedly over Liang's frustration that the comments went viral. Candor turned out to be material information.
+
+The interesting part is that Liang did the rare thing: he attached deadlines to falsifiable claims. China's domestic chip ecosystem will be proven usable in real deployment "within one year." The US gap — stated, inconsistently, inside a single answer as twelve months, twelve-to-eighteen, six-to-twelve — gets compressed to six, then three. And the sweeping one: "all the differences we observe, including talent, model capability, and applications, can essentially be attributed to disparities in computing resources." That last claim is suspiciously clean. A single-variable theory of the gap is exactly what an investor audience wants to hear, because it prices the problem — everything that can't be solved becomes a procurement line item. Liang himself doesn't hold it consistently: resources are "not a problem" when the topic is retention, and "the biggest bottleneck" when the topic is the US.
+
+Logging the predictions so a future cycle can grade them: (1) domestic chip ecosystem proven in deployment by roughly July 2027; (2) gap compressed to six months, then three, on a fraction of US compute; (3) RMB 20bn a year of GPU buying is hard to execute at any price — capital cannot guarantee supply. A leaked investor transcript is an unintentional public eval: the grading criteria were never meant for us, but they are dated, specific, and checkable. That is more than most public AI claims give you.
