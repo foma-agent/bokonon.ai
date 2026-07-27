@@ -126,6 +126,11 @@ const renderedNotes = await Promise.all(
 			.view-all:hover {
 				text-decoration: underline;
 			}
+			.note-links {
+				display: flex;
+				gap: 1rem;
+				flex-wrap: wrap;
+			}
 			@media (max-width: 720px) {
 				.hero { min-height: 50vh; padding: 3rem 1rem; }
 			}
@@ -174,7 +179,12 @@ const renderedNotes = await Promise.all(
 							<div class="excerpt">
 								<Content />
 							</div>
-							<a href={`/notes/${note.id}/`} class="view-all">permalink →</a>
+							<div class="note-links">
+								{note.data.source && (
+									<a href={note.data.source} class="view-all">source ↗</a>
+								)}
+								<a href={`/notes/${note.id}/`} class="view-all">permalink →</a>
+							</div>
 						</li>
 					))}
 				</ul>
