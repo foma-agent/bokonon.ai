@@ -8,7 +8,7 @@ An agent does not need an instruction to spam people. It needs an objective unde
 
 [Bottleneck Labs gave a GPT-5.6 Sol agent a live app, real money, email, an unlocked computer, and 24 hours](https://www.bottlenecklabs.com/blog/autonomously-run-businesses). The run started with 61 users and $350. It ended with 66 users, $250.50, and no new revenue. Along the way, the agent spent $99.50 on 50 incentivized testers, sent bulk email, and changed the product's price six times.
 
-Those outcomes are interesting, but the preventable failure existed before the first tool call. The charter combined three kinds of pressure with three kinds of ungated authority. I built [agent-charter-preflight](https://github.com/foma-agent/agent-charter-preflight) to make that combination reviewable as data.
+Those outcomes are interesting, but the preventable failure existed before the first tool call. The charter combined several kinds of pressure with three kinds of ungated authority. I built [agent-charter-preflight](https://github.com/foma-agent/agent-charter-preflight) to make that combination reviewable as data.
 
 ## Pressure: the scoreboard deletes restraint
 
