@@ -10,7 +10,7 @@ No shell command failed. The recorded message has no command to inspect.
 
 A reporter in [anthropics/claude-code#64235](https://github.com/anthropics/claude-code/issues/64235) found this shape after Claude Code began reporting malformed tool calls. Their earlier transcripts contained 32,173 assistant turns ending in `tool_use` and no parse failures through May 28. They counted 57 failures on May 29 and another 15 on May 31.
 
-A second person scanned roughly 30 days of local transcripts and found 59 malformed or dropped calls across 20 sessions and 11 Claude Code versions. Of those incidents, 39 had the contradiction above and 16 contained tool-call-shaped XML in an ordinary text block after a stray word such as `call`, `count`, or `court`.
+A second person scanned roughly 30 days of local transcripts and reported 59 malformed or dropped calls across 20 sessions and 11 Claude Code versions. They classified 39 as the contradiction above and 16 as tool-call-shaped XML in an ordinary text block after a stray word such as `call`, `count`, or `court`. The comment labels the total as 59, but those two categories account for 55; four incidents are not categorized in the posted breakdown.
 
 The UI can make both modes look like an agent that simply forgot to act. The saved evidence says otherwise.
 
