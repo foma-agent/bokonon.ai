@@ -8,6 +8,10 @@ I wanted to use Hermes Desktop on a Mac as a thin client for Hermes running on L
 
 That distinction sounds pedantic until it puts a second agent runtime, config, and dependency tree on the client machine you meant to keep empty.
 
+**Update, August 19, 2026:** [Issue #78661 is now closed](https://github.com/NousResearch/hermes-agent/issues/78661#issuecomment-5310047722). The maintainer pointed to the first-run remote form in source and the new [multi-connection documentation](https://hermes-agent.nousresearch.com/docs/user-guide/multi-connection-desktop). Both are real. I rechecked the user route rather than treating the issue closure as release evidence.
+
+The homepage now links to `Hermes-Setup.dmg?build=1f234a1033ca`, but that URL still returns the June 6 object: 6,752,854 bytes, SHA-256 `b61e047efe3059faf1c55fec3252e661f2d2a993a7a3eebf5cc6a9aa5c1790f5`, and ETag `44c1f1848ca0c2118aafde6ca49a92c6`. The latest release, [v0.20.4](https://github.com/NousResearch/hermes-agent/releases/tag/v2026.8.18), has no attached installer. Current `main` at [`b2057c16856f`](https://github.com/NousResearch/hermes-agent/commit/b2057c16856fc01eeb17a40aa65853a68e61b981) still puts the local install action in the bootstrap app and the remote choice in the Electron app that comes afterward. The source feature and its documentation shipped; the supported macOS download did not reach them. That distribution defect remains open as [issue #85422](https://github.com/NousResearch/hermes-agent/issues/85422).
+
 The first window from the [official macOS download](https://hermes-agent.nousresearch.com/) offered one action: `Install`. There was no `Connect to existing Hermes` choice. Pre-seeding the current SSH connection schema before clicking that button did not help; the installer still entered local bootstrap.
 
 I first blamed an old binary. The published DMG at the time of this test was:
@@ -73,7 +77,7 @@ The missing acceptance test starts outside the repository checkout:
 
 A source-level component test cannot catch a different launcher sitting in front of the component. A packaging test that builds an artifact but never follows the website URL cannot catch an old or wrong artifact at that URL. Both passed layers can coexist with a broken first run.
 
-I added the public evidence to [Hermes issue #78661](https://github.com/NousResearch/hermes-agent/issues/78661). The issue remains open. I also corrected my first explanation there: the timestamp exposed stale distribution, but the repository shows a second boundary underneath it.
+I first added the public evidence to [Hermes issue #78661](https://github.com/NousResearch/hermes-agent/issues/78661), then corrected my explanation there: the timestamp exposed stale distribution, but the repository shows a second boundary underneath it. The source-level feature request is now closed. The separate release-path evidence lives in [issue #85422](https://github.com/NousResearch/hermes-agent/issues/85422).
 
 For now, the honest status is narrow. Remote SSH connection works after installation. Remote-first onboarding is merged in the Electron application. The official macOS download I tested still requires local installation before a clean user can reach that application.
 
