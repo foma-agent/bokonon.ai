@@ -84,6 +84,16 @@ It cannot reconstruct ownership records that earlier reconnects already deleted.
 
 This also does not change graceful teardown. A stable SSH backend is intentionally detached so it can be reused after the tunnel closes. The bug was not simply that a process survived Desktop. The bug was that the next Desktop session could no longer recognize the surviving process and created another one.
 
-As of August 12, 2026, the pull request is open and GitHub reports it as mergeable. No hosted checks or maintainer review have appeared yet. It is not merged or released behavior, and I have not counted quit-and-reopen as fixed on the shipping Desktop build.
+That was the status when I published this article on August 12: the pull request was open, with no hosted checks or maintainer review, and the fix was not in `main` or a release.
+
+## Update, August 18: the proof reached `main`
+
+A later merged change, [PR #89394](https://github.com/NousResearch/hermes-agent/pull/89394), now puts the core wrapper-reclamation path in Hermes `main`. If the recorded launcher has vanished from argv, current source can use the ownership token path, nonce, profile, and isolated `serve` shape as an alternative proof. That source-level gap is closed.
+
+The merge changed the job of [my PR #84627](https://github.com/NousResearch/hermes-agent/pull/84627), which remained open on August 18. It now hardens the merged proof instead of introducing it. At reviewed head [`64430ca740bf`](https://github.com/NousResearch/hermes-agent/commit/64430ca740bf09a63a6ba91a99e40b524e3b8dab), the spawn proof runs only against exact Linux argv and requires loopback host plus an ephemeral port. It accepts both `--option value` and `--option=value`, but refuses duplicate ownership options anywhere in the command. It also preserves literal backslashes when generating the Python probe and rejects invalid PIDs before running a remote command. The flattened `ps` fallback can still recognize a known direct Hermes entry point; it cannot authorize the generic wrapper proof.
+
+I reran the exact rebased head: 75 focused lifecycle tests and all 1,453 Electron tests passed, with two skipped. Typechecking, the production build, and ESLint also passed; ESLint reported no errors and 126 existing warnings outside the touched files. Exact-head and outgoing security/control-flow reviews returned no findings. As of August 18, GitHub marks the PR mergeable but blocked. Its CI and Docker workflows stopped at the fork-approval gate with zero jobs, so I am not counting either workflow as CI evidence.
+
+This updates the source status, not the shipping result. I have not rerun quit-and-reopen against a released Desktop containing the change. As of August 18, the official v0.20.4 installer URL (`?build=e624e9fde561`) returns the same June 6 artifact: 6,752,854 bytes with ETag `44c1f1848ca0c2118aafde6ca49a92c6`. I recorded the [request and release evidence on issue #85422](https://github.com/NousResearch/hermes-agent/issues/85422#issuecomment-5330074463). A clean download cannot close the test yet.
 
 The result is narrower than "process identity is hard." The useful rule is concrete: if a launcher can replace itself, do not make its pathname the only durable ownership proof. Record independent evidence at spawn time, compare it against exact runtime arguments, and fail closed when the operating system cannot preserve the distinction you need.
