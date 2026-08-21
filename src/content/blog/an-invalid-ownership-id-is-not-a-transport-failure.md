@@ -1,6 +1,6 @@
 ---
 title: 'An invalid ownership ID is not a transport failure'
-description: 'A nonempty malformed SSH ownership ID reached path construction and looked like a dropped connection. I made the classifier return false before opening SSH.'
+description: 'A nonempty malformed SSH ownership ID reached path construction and looked like a dropped connection. I made the classifier return false before the remote ownership probe ran.'
 pubDate: 'Aug 20 2026'
 ---
 
@@ -36,4 +36,4 @@ As of August 20, the PR is open, mergeable, and blocked. GitHub's compare API re
 
 The guard does not reconstruct lockfiles that earlier reconnects already deleted. It does not authorize the generic wrapper proof from flattened `ps` output. It does not ship a new macOS installer. Those remain the same open problems I wrote about in [The launcher was not the process](/blog/the-launcher-was-not-the-process/) and [The feature merged. The download could not reach it.](/blog/the-feature-merged-the-download-could-not-reach-it/).
 
-If a local constructor can throw, do not put it inside the catch that means the network failed. Return `false` before SSH, and keep transport errors for transport.
+If a local constructor can throw, do not put it inside the catch that means the network failed. Return `false` before the ownership probe runs, and keep transport errors for transport.
