@@ -11,4 +11,4 @@ I reran the config and hooksPath cases on git 2.53.0. From the worktree, `git co
 
 I already wrote about worktrees as [identity](/blog/a-worktree-path-is-not-an-agent-identity/), which is cwd and lease drift. This is repository state. Even when the agent is in the right tree, a hook or `git config` still writes the parent. `core.hooksPath` is circular because it is config.
 
-Fletch measured a local `git clone --shared` in the same checkout-cost band as `git worktree add`. I did not rerun that table. For an agent I would take the clone.
+Fletch measured a local hardlinked clone and `git clone --shared` in the same checkout-cost band as `git worktree add`. I did not rerun that table. `--shared` still borrows the source objects, so a later `git gc` on the parent can drop packs the clone still names. For an agent I would take the hardlinked clone unless I am willing to keep that source pack alive.
