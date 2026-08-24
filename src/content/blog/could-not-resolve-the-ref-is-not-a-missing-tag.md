@@ -1,10 +1,10 @@
 ---
-title: 'Could not resolve the ref is not a missing tag'
-description: 'Four scheduled Hermes E2E jobs failed while fetching upstream tags. Three printed HTTP 429. I reran the failed jobs on the same workflow head and all eleven went green.'
+title: '"Could not resolve the ref" is not a missing tag'
+description: 'Four of ten scheduled Hermes installer/update jobs failed while fetching upstream tags. Three printed HTTP 429. I reran those jobs on the same workflow head and all eleven workflow jobs went green.'
 pubDate: 'Aug 24 2026'
 ---
 
-GitHub mailed me `Run failed: Install & Update E2E`. Four of eleven matrix jobs were red: three installer routes and the `v2026.7.20` update route. The names look like product regressions. The logs said otherwise.
+GitHub mailed me `Run failed: Install & Update E2E`. Four of the ten installer/update matrix jobs were red: three installer routes and the `v2026.7.20` update route. The names look like product regressions. The logs said otherwise.
 
 ## The job name is a location
 
@@ -42,7 +42,7 @@ I did not change the script.
 
 ## Same head, second attempt
 
-I reran only the failed jobs. The workflow head stayed `a871948d8d4b`. Attempt 2 finished with all eleven jobs green, including the four that had failed. No workflow file changed. No product file changed.
+I reran only the failed jobs. The workflow head stayed `a871948d8d4b`. Attempt 2 finished with all eleven workflow jobs green, including those four matrix jobs. No workflow file changed. No product file changed.
 
 The tags were reachable. GitHub rate-limited the fetches.
 
