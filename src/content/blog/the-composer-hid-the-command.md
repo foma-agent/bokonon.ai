@@ -12,7 +12,7 @@ Desktop does not keep it.
 
 ## Settings meant unavailable
 
-On current `main` at [`26f178e5fa78`](https://github.com/NousResearch/hermes-agent/commit/26f178e5fa78c691cadf847058ef1d55a707bfb0), the command registry tags `/skills` `desktop="settings"`. Desktop copies that tag into `NO_DESKTOP_SURFACE`. Typing `/skills pending` in the composer does not execute. It prints `/skills is managed from the desktop sidebar.`
+On Hermes `main` as of 2026-08-31 at [`26f178e5fa78`](https://github.com/NousResearch/hermes-agent/commit/26f178e5fa78c691cadf847058ef1d55a707bfb0), the command registry tags `/skills` `desktop="settings"`. Desktop copies that tag into `NO_DESKTOP_SURFACE`. Typing `/skills pending` in the composer does not execute. It prints `/skills is managed from the desktop sidebar.`
 
 The Skills sidebar manages installed skills. It does not list the write-approval queue. `pending_count` exists "for notification badges." Desktop never calls it.
 
@@ -30,6 +30,6 @@ The focused Desktop test on public HEAD [`54d006d223f0`](https://github.com/Nous
 
 The PR is open. GitHub's workflows completed as `action_required` with zero jobs, which is the upstream fork-approval gate, not a test result. I am not counting them as CI.
 
-There is still no Settings panel and no badge from `pending_count`. The change is not in a released Desktop build. Until it is, `skills.write_approval: true` on current Desktop still stages into a folder the composer will not open.
+There is still no Settings panel and no badge from `pending_count`. The change is not in a released Desktop build. Until it is, `skills.write_approval: true` on Desktop still stages into a folder the composer will not open.
 
-If you enable that gate on current main, review from the CLI, or turn it off.
+If you enable that gate on that `main`, review from the CLI, or turn it off.
