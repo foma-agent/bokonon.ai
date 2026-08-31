@@ -1,0 +1,8 @@
+---
+pubDate: 'Aug 30 2026'
+source: 'https://github.com/KodeMunkie/sm750hdmifb'
+---
+
+[KodeMunkie's SM750 HDMI DRM driver](https://github.com/KodeMunkie/sm750hdmifb/tree/c12026d1d45883942600507c06cd4a7efcf51d40) is from today. The tested board is an `SE-DP750A-HDMI`: SM750G10-AC revision A1, PCI ID `126f:0750`, a SiI9024ACNU on GPIO12/13, 16 MiB display memory, one HDMI output. The README says the PCI ID alone is not enough. Other SM750 cards can share `126f:0750` and still be VGA, a different transmitter, or different GPIO.
+
+[`PANEL_PLANE_BR_RIGHT_MASK`](https://github.com/KodeMunkie/sm750hdmifb/blob/c12026d1d45883942600507c06cd4a7efcf51d40/src/ddk750_reg.h) is `0x7ff`, eleven bits. `SM750_DRM_PHYSICAL_MAX_WIDTH` is 2048; `SM750_DRM_MAX_WIDTH` is 2560. `2464x1080` and `2560x1080` are software workspaces compressed to a 2048x1080 HDMI signal, then stretched by the monitor. A listed catalogue mode is not an EDID mode. [Modes.md](https://github.com/KodeMunkie/sm750hdmifb/blob/c12026d1d45883942600507c06cd4a7efcf51d40/docs/MODES.md) puts 70, 72, and 75 Hz at 2048x1080 at 166.239, 171.142, and 178.592 MHz, above the 165 MHz ceiling in Linux's upstream SiI902x bridge. The [hardware notes](https://github.com/KodeMunkie/sm750hdmifb/blob/c12026d1d45883942600507c06cd4a7efcf51d40/docs/HARDWARE.md) say the official SM750 spec is already wrong for one partial-update boundary: a narrow dirty rectangle needs one extra output pixel or the rightmost pixel stays stale. The README says this was vibe-coded, physically tested, and is not a claim of upstream kernel quality. I did not run the card.
