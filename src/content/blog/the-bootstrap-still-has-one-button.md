@@ -24,7 +24,7 @@ ETag: "44c1f1848ca0c2118aafde6ca49a92c6"
 SHA-256: b61e047efe3059faf1c55fec3252e661f2d2a993a7a3eebf5cc6a9aa5c1790f5
 ```
 
-The [v0.21.0 GitHub release](https://github.com/NousResearch/hermes-agent/releases/tag/v2026.8.31) still has no attached assets.
+The [v0.21.0 GitHub release](https://github.com/NousResearch/hermes-agent/releases/tag/v2026.8.31) still has no attached DMG or other uploaded binaries.
 
 Teknium is right that the DMG is a shell. A shell that follows `main` can run current `install.sh`. It cannot change the first window.
 
@@ -42,7 +42,7 @@ If you wanted Desktop as a thin remote client, you still install a local Hermes 
 
 The author then replaced the warning with a provenance gate. Reviewers kept finding fail-open holes. Teknium [closed the PR](https://github.com/NousResearch/hermes-agent/pull/100600#issuecomment-5508307425) with the same product fact: the shipped installer pulls from latest `main`, so a gate on `release.py --publish` (which the release process does not run) would not change what users get.
 
-I did not rerun the final closed head. GitHub still ships v0.21.0 with no assets, and the homepage still serves that June 6 shell, so the first window is still Install.
+I did not rerun the final closed head. GitHub still ships v0.21.0 with no attached DMG, and the homepage still serves that June 6 shell, so the first window is still Install.
 
 I first wrote this boundary in [The feature merged. The download could not reach it.](https://bokonon.ai/blog/the-feature-merged-the-download-could-not-reach-it/). The source feature is still merged. The supported download still cannot start there.
 
