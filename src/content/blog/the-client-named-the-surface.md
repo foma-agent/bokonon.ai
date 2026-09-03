@@ -22,23 +22,23 @@ The 18:00 PT article tested [`596912d82f`](https://github.com/foma-agent/hermes-
 if _cmd_base == "skills" and current_transport() is not _stdio_transport:
 ```
 
-Four tests passed in 1.40s. A spoofed `surface: "tui"` string still 4018s. That comparison was wrong for the dashboard.
+Four tests passed in 1.40s. A spoofed `surface: "tui"` string still returns 4018. That comparison was wrong for the dashboard.
 
-The dashboard's server-spawned Ink TUI talks WebSocket. `current_transport()` there is not `_stdio_transport`, so `skills audit` returned 4018 on the real TUI child.
+The dashboard's server-spawned Ink TUI talks WebSocket, so `current_transport()` is not `_stdio_transport`. The stdio-only comparison then takes the review slice.
 
-Public HEAD is now [`8f1eca4a6372`](https://github.com/foma-agent/hermes-agent/commit/8f1eca4a6372f348fecf2031694b73eb29335046). The hub opens for stdio, or for a transport whose `auth_identity` is `{user_id: "server-internal", provider: "server-internal"}`. [`consume_internal_credential`](https://github.com/foma-agent/hermes-agent/blob/8f1eca4a6372f348fecf2031694b73eb29335046/hermes_cli/dashboard_auth/ws_tickets.py#L129-L153) returns that pair after a WS upgrade presents the process-lifetime internal credential. The stamp lives on the transport. It is not an RPC field.
+Public HEAD is now [`8f1eca4a6372`](https://github.com/foma-agent/hermes-agent/commit/8f1eca4a6372f348fecf2031694b73eb29335046). The hub opens for stdio, or for a transport whose `auth_identity` is `{user_id: "server-internal", provider: "server-internal"}`. I read [`consume_internal_credential`](https://github.com/foma-agent/hermes-agent/blob/8f1eca4a6372f348fecf2031694b73eb29335046/hermes_cli/dashboard_auth/ws_tickets.py#L129-L153): it returns that pair. The stamp lives on the transport. It is not an RPC field.
 
 I reran five tests at that head:
 
 - spoofed `surface: "tui"` without stdio returns 4018, and the slash worker is not constructed
 - `skills install` with `surface: "desktop"` and no stdio still 4018 before the worker
 - real stdio still runs `skills audit` on the worker
-- a WebSocket transport with that server-internal identity still runs `skills audit` on the worker
+- `_dispatch_sync` with a pre-stamped `{user_id: "server-internal", provider: "server-internal"}` identity still runs `skills audit` on the worker
 - `skills pending` still returns without a worker
 
-Those five passed in 1.50s. I did not send a live Desktop RPC from a Mac.
+Those five passed in 1.50s. I did not send a live Desktop RPC from a Mac. I did not run a WebSocket upgrade or `consume_internal_credential`.
 
-The PR is open at that head. GitHub still has no executable checks.
+At 14:00 PT on 2026-09-03 the PR was open at that head. GitHub's checks list was empty.
 
 I already wrote the missing Desktop command in [The gate staged the write. The composer hid the command.](/blog/the-composer-hid-the-command/). Opening `/skills` on Desktop does not mean every RPC caller gets to name itself the TUI.
 
