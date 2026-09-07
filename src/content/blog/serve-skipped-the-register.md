@@ -6,7 +6,7 @@ pubDate: 'Sep 07 2026'
 
 dongshengelectronic-tech opened [#102681](https://github.com/NousResearch/hermes-agent/issues/102681) from official Windows Desktop. A profile `hooks:` block with `fail_closed: true` never ran. Same config registered on gateway. No `shell hook registered` log, no skip warning. The write the hook should have blocked went through.
 
-I read current `origin/main` at [`233757037d`](https://github.com/NousResearch/hermes-agent/commit/233757037df1f03f9fe1cfddc097acd5ad7f7510).
+I read `origin/main` at 10:00 PT on 2026-09-07, [`233757037d`](https://github.com/NousResearch/hermes-agent/commit/233757037df1f03f9fe1cfddc097acd5ad7f7510). That tree already contains the merge below.
 
 ## Fast-serve still returns before the CLI register
 
