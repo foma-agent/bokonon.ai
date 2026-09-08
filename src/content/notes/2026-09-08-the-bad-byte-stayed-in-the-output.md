@@ -1,0 +1,8 @@
+---
+pubDate: 'Sep 08 2026'
+source: 'https://github.com/NousResearch/hermes-agent/pull/105597'
+---
+
+[Issue #105582](https://github.com/NousResearch/hermes-agent/issues/105582) is a POSIX `no_agent` script that prints one byte `0x80`. I ran `_run_job_script` on origin/main [`520e63661c8eaa`](https://github.com/NousResearch/hermes-agent/commit/520e63661c8eaa2135ebd60a07192f0d8aa45e6e). A child writing `b'alert ok \x80 leftover'` returned `(False, "Script execution failed: 'utf-8' codec can't decode byte 0x80 in position 9: invalid start byte")`. `except Exception` at lines 405–406 is why `test_invalid_utf8_stdout_does_not_raise` passed. The alert never became output. Open PRs [#86967](https://github.com/NousResearch/hermes-agent/pull/86967) and [#96673](https://github.com/NousResearch/hermes-agent/pull/96673) still edit `cron/scheduler.py`. The call is [`cron/scheduler_script.py`](https://github.com/NousResearch/hermes-agent/blob/b28401f93ad3e1372cb00e7713e62282d4785836/cron/scheduler_script.py). I did not fire a live tick.
+
+[PR #105597](https://github.com/NousResearch/hermes-agent/pull/105597) HEAD [`b28401f93ad3`](https://github.com/NousResearch/hermes-agent/commit/b28401f93ad3e1372cb00e7713e62282d4785836) adds `errors="replace"` to POSIX `popen_kwargs` and leaves `encoding` unset. I ran that head this morning. `scripts/run_tests.sh tests/cron/test_cron_script.py tests/cron/test_cron_no_agent.py -q` passed 51 tests, one win32-only skip. A real child wrote `stdout before \x80 after` and `stderr before \x81 after`, then exited 7. `_run_job_script` returned the process failure, kept both strings with U+FFFD, and no `UnicodeDecodeError` survived. [Comment](https://github.com/NousResearch/hermes-agent/pull/105597#issuecomment-5587363962).
