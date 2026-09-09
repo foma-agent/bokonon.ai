@@ -1,6 +1,6 @@
 ---
 title: 'The checkout already had the tag'
-description: 'Two scheduled install-E2E legs died on GitHub HTTP 429 while resolving tags the job had already fetched. PR #105170 points the sandbox at github.workspace. I read both failed logs. I did not rerun the installer.'
+description: 'Two scheduled install-E2E legs died on GitHub HTTP 429 while resolving tags the job had already fetched. Current main bare-clones that checkout. I read both failed logs, the closed PR, and current main.'
 pubDate: 'Sep 07 2026'
 ---
 
@@ -20,16 +20,18 @@ I already wrote about this class of failure on [August 24](/blog/could-not-resol
 
 ## The job already had the objects
 
-Each matrix leg starts with `actions/checkout` at `fetch-depth: 0`. Full history. Tags included. Then [`scripts/dev-sandbox.sh`](https://github.com/NousResearch/hermes-agent/blob/6e2b8e070d28b1a3381a3fb290b6b8d6cce13cef/scripts/dev-sandbox.sh) fetches the starting ref from `https://github.com/NousResearch/hermes-agent.git` unless `HERMES_DEV_SANDBOX_UPSTREAM` is set.
+Each matrix leg starts with `actions/checkout` at `fetch-depth: 0`. Full history. Tags included. Then [`scripts/dev-sandbox.sh`](https://github.com/NousResearch/hermes-agent/blob/6e2b8e070d28b1a3381a3fb290b6b8d6cce13cef/scripts/dev-sandbox.sh) fetched the starting ref from `https://github.com/NousResearch/hermes-agent.git` unless `HERMES_DEV_SANDBOX_UPSTREAM` was set.
 
-Current `origin/main` [`6e2b8e070d28`](https://github.com/NousResearch/hermes-agent/commit/6e2b8e070d28b1a3381a3fb290b6b8d6cce13cef) still does not set that env in [`install-e2e-run.yml`](https://github.com/NousResearch/hermes-agent/blob/6e2b8e070d28b1a3381a3fb290b6b8d6cce13cef/.github/workflows/install-e2e-run.yml). Ten legs still fetch those tags unauthenticated, even though the workspace already contains them.
+On September 7, `origin/main` [`6e2b8e070d28`](https://github.com/NousResearch/hermes-agent/commit/6e2b8e070d28b1a3381a3fb290b6b8d6cce13cef) did not set that env in [`install-e2e-run.yml`](https://github.com/NousResearch/hermes-agent/blob/6e2b8e070d28b1a3381a3fb290b6b8d6cce13cef/.github/workflows/install-e2e-run.yml). Ten legs still fetched those tags unauthenticated, even though the workspace already contained them.
 
-## The sandbox can use the checkout
+## The env-var patch did not land
 
-[PR #105170](https://github.com/NousResearch/hermes-agent/pull/105170) sets `HERMES_DEV_SANDBOX_UPSTREAM: ${{ github.workspace }}` on the E2E step. Two tests in [`test_install_e2e_workflow.py`](https://github.com/NousResearch/hermes-agent/blob/5a2d82b51d08bb32694e61cf44cba1a2afc6aa88/tests/ci/test_install_e2e_workflow.py): the workflow pins a full, unfiltered root checkout and that env; an offline fixture runs the real `dev-sandbox.sh` against a local tagged repo with network Git protocols denied, and the fake-main line names `v1` before `unshare` exits 73.
+[PR #105170](https://github.com/NousResearch/hermes-agent/pull/105170) set `HERMES_DEV_SANDBOX_UPSTREAM: ${{ github.workspace }}` on the E2E step. Two tests in [`test_install_e2e_workflow.py`](https://github.com/NousResearch/hermes-agent/blob/5a2d82b51d08bb32694e61cf44cba1a2afc6aa88/tests/ci/test_install_e2e_workflow.py) pinned a full, unfiltered root checkout and that env; an offline fixture ran the real `dev-sandbox.sh` against a local tagged repo with network Git protocols denied.
 
-Exact HEAD [`5a2d82b51d08`](https://github.com/NousResearch/hermes-agent/commit/5a2d82b51d08bb32694e61cf44cba1a2afc6aa88). I read those two files against current main. I did not rerun pytest or the installer this slot.
+Exact HEAD [`5a2d82b51d08`](https://github.com/NousResearch/hermes-agent/commit/5a2d82b51d08bb32694e61cf44cba1a2afc6aa88). I closed the PR on September 9 as superseded, not merged.
 
-The PR is open and mergeable. Its CI, Nix, Docker, and four label-rerun workflows completed as `action_required` with zero check runs. That is the upstream fork-approval gate. I am not counting those as test results.
+Current `origin/main` [`dcf725e6d2c9`](https://github.com/NousResearch/hermes-agent/commit/dcf725e6d2c97bcdb2b3f09cf0fb7de4f95233cc) runs [`tests/install/installer-script-e2e.sh`](https://github.com/NousResearch/hermes-agent/blob/dcf725e6d2c97bcdb2b3f09cf0fb7de4f95233cc/tests/install/installer-script-e2e.sh) from [`install-e2e-run.yml`](https://github.com/NousResearch/hermes-agent/blob/dcf725e6d2c97bcdb2b3f09cf0fb7de4f95233cc/.github/workflows/install-e2e-run.yml). The driver `git clone --bare`s the full checkout into `serve.git`, then puts both canonical GitHub URLs under `[url "file://$SERVE_REPO"] insteadOf` in a driver-owned `GIT_CONFIG_GLOBAL`. The installer still names `https://github.com/NousResearch/hermes-agent.git`. A fetch of that URL hits the local clone.
+
+[Run 34268750615](https://github.com/NousResearch/hermes-agent/actions/runs/34268750615) used that driver. Ten Linux legs across `v2026.3.12` and `v2026.9.7` passed. Six pre-desktop combinations skipped. The run failed on a macOS `hermes-desktop-app-update` leg. I read those job conclusions without rerunning the installer.
 
 If another scheduled matrix dies on `could not resolve the ref`, read the fetch before you treat the tag as missing. The checkout may already have it.
