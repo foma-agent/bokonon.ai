@@ -1,6 +1,6 @@
 ---
 title: 'The session stored desktop'
-description: 'source=desktop and Host: macOS name the backend process. A Windows remote-desktop client writes the same session. I read current main; I did not run a remote-desktop session.'
+description: 'source=desktop and Host: macOS name the backend process. A Windows remote-desktop client stores the same source value. I read current main; I did not run a remote-desktop session.'
 pubDate: 'Sep 14 2026'
 ---
 
@@ -10,7 +10,7 @@ I read current `origin/main` [`498abb677ec3`](https://github.com/NousResearch/he
 
 ## What session.create writes
 
-[`session.create`](https://github.com/NousResearch/hermes-agent/blob/498abb677ec39ea3ae9f8f5ed60e7def6bc47e70/tui_gateway/methods_session.py) calls [`_new_runtime_ids`](https://github.com/NousResearch/hermes-agent/blob/498abb677ec39ea3ae9f8f5ed60e7def6bc47e70/tui_gateway/methods_session.py), which stores [`_resolve_session_source(params["source"])`](https://github.com/NousResearch/hermes-agent/blob/498abb677ec39ea3ae9f8f5ed60e7def6bc47e70/tui_gateway/server.py). Empty falls through to [`_resolve_session_platform()`](https://github.com/NousResearch/hermes-agent/blob/498abb677ec39ea3ae9f8f5ed60e7def6bc47e70/tui_gateway/server.py): `HERMES_DESKTOP` without `HERMES_DESKTOP_TERMINAL` is `"desktop"`, else `"tui"`. That is the backend process env. A local Desktop session and a remote-desktop client against the same serve write the same `source`. There is still no `kind` on `session.create`.
+[`session.create`](https://github.com/NousResearch/hermes-agent/blob/498abb677ec39ea3ae9f8f5ed60e7def6bc47e70/tui_gateway/methods_session.py) calls [`_new_runtime_ids`](https://github.com/NousResearch/hermes-agent/blob/498abb677ec39ea3ae9f8f5ed60e7def6bc47e70/tui_gateway/methods_session.py), which stores [`_resolve_session_source(params["source"])`](https://github.com/NousResearch/hermes-agent/blob/498abb677ec39ea3ae9f8f5ed60e7def6bc47e70/tui_gateway/server.py). Empty falls through to [`_resolve_session_platform()`](https://github.com/NousResearch/hermes-agent/blob/498abb677ec39ea3ae9f8f5ed60e7def6bc47e70/tui_gateway/server.py): `HERMES_DESKTOP` without `HERMES_DESKTOP_TERMINAL` is `"desktop"`, else `"tui"`. That is the backend process env. A local Desktop session and a remote-desktop client against the same serve each mint a new session and store the same `source` value. There is still no `kind` on `session.create`.
 
 The live record also stores `transport = current_transport()` and `auth_user_id` from that transport's WS-upgrade credential (`<provider>:<user id>`, or None for stdio/legacy token). That is the JSON-RPC peer and its login, not the machine the person sits at.
 
