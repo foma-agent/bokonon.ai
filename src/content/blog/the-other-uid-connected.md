@@ -14,9 +14,9 @@ Default publication is still 0600. `--socket-mode 0666` makes the inode reachabl
 
 The runner travels as an already-open regular file over `SCM_RIGHTS`. The suite chmods the path to 000 and unlinks it; the child still runs because the descriptor is the authority, not the pathname.
 
-When `terminal.local_exec_broker` is present, `LocalEnvironment` requires a non-empty socket string and a non-negative integer uid, then `_run_bash` calls `request_launch` with argv, cwd, env, stdin, and stdout. BrokerError and OSError on that path become `EnvironmentConnectionError`. The unconfigured path still uses `Popen`. `spawn_via_env` wraps `hermes_bg_*` workers in `nohup setsid` so they leave the foreground lease. `code_kernel.py` still has no `request_launch`.
+When `terminal.local_exec_broker` is present, `LocalEnvironment` requires a non-empty socket string and a non-negative integer uid, then `_run_bash` calls `request_launch` with argv, cwd, env, stdin, and stdout. BrokerError and OSError on that path become `EnvironmentConnectionError`. The unconfigured terminal path still uses `Popen`. `spawn_via_env` wraps `hermes_bg_*` workers in `nohup setsid` so they leave the foreground lease. That wiring is the terminal path only. `code_kernel.py` `_spawn` still uses `subprocess.Popen` and has no `request_launch`.
 
-The call-site from the earlier prototype `ac00d9a7ce2a` is five files: the broker, its tests, `tools/environments/local.py`, `tools/process_registry.py`, and `tests/tools/test_process_registry.py`. 1515 insertions, 73 deletions. There is still no installer and no service unit.
+The earlier prototype `ac00d9a7ce2a` was two files. The delta from that commit to this HEAD is five files: the broker, its tests, `tools/environments/local.py`, `tools/process_registry.py`, and `tests/tools/test_process_registry.py`. 1515 insertions, 73 deletions. There is still no installer and no service unit.
 
 I ran the suite this slot against that HEAD:
 
