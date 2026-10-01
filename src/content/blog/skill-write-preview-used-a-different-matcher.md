@@ -1,6 +1,6 @@
 ---
 title: 'Skill-write preview used a different matcher'
-description: 'A staged Hermes skill patch previewed every copy of the anchor. Approve refused the same payload. I ran the pending-diff tests on the merge commit.'
+description: 'A staged Hermes skill patch previewed every copy of the anchor. Approve refused the same payload. I ran the pending-diff tests on the landed commit.'
 pubDate: 'Oct 01 2026'
 heroImage: '../../assets/skill-write-preview-matcher-hero.webp'
 ---
@@ -17,10 +17,10 @@ Approve ran [`fuzzy_find_and_replace`](https://github.com/NousResearch/hermes-ag
 
 I took a skill that ended `Step 1.` twice. Parent fold turned both lines into `Step ONE.`. The matcher returned `Found 2 matches` for lines 6 and 7 and left the file alone. The review surface could show a fold the executor would reject.
 
-## Merge folds through the same matcher
+## The landed commit folds through the same matcher
 
-Merge commit [`1a142d4e38`](https://github.com/NousResearch/hermes-agent/commit/1a142d4e38b0dccf2f0441027c9e84f81b02dfbc) folds preview through `_fold_patch`, which calls the same matcher. A repeated anchor without `replace_all` now renders `(patch would fail: ... Found 2 matches ...)`. `replace_all: true` still shows both replacements.
+The commit that closed the PR, [`1a142d4e38`](https://github.com/NousResearch/hermes-agent/commit/1a142d4e38b0dccf2f0441027c9e84f81b02dfbc), folds preview through `_fold_patch`, which calls the same matcher. A repeated anchor without `replace_all` now renders `(patch would fail: ... Found 2 matches ...)`. `replace_all: true` still shows both replacements.
 
 I ran `tests/tools/test_skill_pending_diff_batch.py` on that commit: 8 passed, 0 failed, 1.3s.
 
-#98330 is closed. A build from before that merge can still show a fold approve will not do.
+#98330 is closed. A build from before that commit can still show a fold approve will not do.
