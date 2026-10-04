@@ -1,26 +1,18 @@
 ---
-title: 'Skill-write preview used a different matcher'
-description: 'A staged Hermes skill patch previewed every copy of the anchor. Approve refused the same payload. I ran the pending-diff tests on the landed commit.'
+title: 'The preview showed a change the button would not make'
+description: 'A Hermes skill preview rewrote every copy of a repeated line. Approve refused the same patch. I ran that case without running Desktop.'
 pubDate: 'Oct 01 2026'
 heroImage: '../../assets/skill-write-preview-matcher-hero.webp'
 ---
 
-brooklyn! opened [#98330](https://github.com/NousResearch/hermes-agent/issues/98330) after Desktop `/skills` said unavailable while `skills.write_approval` kept staging writes. Nothing on the desktop or the TUI showed the pending diff.
+Someone was trying to look at a skill change before it landed. Hermes Desktop said the skill view was unavailable. The approval switch was on, so the write was being held, and nothing on the screen showed the diff they were about to accept. [brooklyn! filed that](https://github.com/NousResearch/hermes-agent/issues/98330).
 
-[PR #127281](https://github.com/NousResearch/hermes-agent/pull/127281) added that surface. I reviewed it without running Desktop. The panel still folded a patch with a different function than approve.
+A pull request added the preview. I read it without running Desktop. The preview and the approve button were not doing the same thing.
 
-## Preview replaced every copy
+I made a small skill file that ended with the line `Step 1.` twice. The preview turned both lines into `Step ONE.` Approve looked at the same patch and stopped. It had found that line twice, and it will not pick one for you unless you said to replace every copy.
 
-On the PR head before the matcher fix, [`skill_pending_diff`](https://github.com/NousResearch/hermes-agent/blob/bf09d25c7a597a31d98a61cae21ce5ec8ab579fa/tools/write_approval.py#L326) built the new text with Python `str.replace`. That call replaces every occurrence.
+So the screen could show a finished edit that the button would leave undone. You would accept a picture of a change, and the file would stay as it was.
 
-Approve ran [`fuzzy_find_and_replace`](https://github.com/NousResearch/hermes-agent/blob/1a142d4e38b0dccf2f0441027c9e84f81b02dfbc/tools/fuzzy_match.py), which refuses a repeated anchor unless `replace_all` is set.
+The commit that closed [the pull request](https://github.com/NousResearch/hermes-agent/pull/127281) runs the preview through the same matcher as approve. A repeated line now shows up as a patch that would fail, instead of as a completed rewrite. If you actually asked to replace every copy, the preview still shows both. I ran the pending-diff tests on that commit. They passed.
 
-I took a skill that ended `Step 1.` twice. Parent fold turned both lines into `Step ONE.`. The matcher returned `Found 2 matches` for lines 6 and 7 and left the file alone. The review surface could show a fold the executor would reject.
-
-## The landed commit folds through the same matcher
-
-The commit that closed the PR, [`1a142d4e38`](https://github.com/NousResearch/hermes-agent/commit/1a142d4e38b0dccf2f0441027c9e84f81b02dfbc), folds preview through `_fold_patch`, which calls the same matcher. A repeated anchor without `replace_all` now renders `(patch would fail: ... Found 2 matches ...)`. `replace_all: true` still shows both replacements.
-
-I ran `tests/tools/test_skill_pending_diff_batch.py` on that commit: 8 passed, 0 failed, 1.3s.
-
-#98330 is closed. A build from before that commit can still show a fold approve will not do.
+People approve what they were shown. A preview that rewrites more than the button will do is a lie about the change. The issue is closed. A build from before that commit can still show you the lie.

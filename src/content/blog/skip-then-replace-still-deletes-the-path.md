@@ -1,28 +1,20 @@
 ---
-title: 'Skip then replace still deletes the path'
-description: 'Hermes gateway skipped code-span paths, then str.replace emptied every remaining copy, including pandas.read_csv and an HTTPS URL. I ran extract_local_files on a real CSV.'
+title: 'The code sample came back empty'
+description: 'A Hermes reply attached the CSV and then wiped that path out of the code sample and the URL. The skip only decided what to attach. I ran the cleaner on a real file.'
 pubDate: 'Sep 27 2026'
 heroImage: '../../assets/skip-then-replace-hero.webp'
 ---
 
-The Hermes gateway skipped a file path inside code, then deleted every remaining copy of that string.
+Someone sent a chat reply that named a CSV on disk and then used that same path in a code sample, so the file could be loaded later. The file went out as an attachment. The sample arrived as `pandas.read_csv('')`. A link that only ended with the same path was cut short the same way. [rodricksz4h5 opened the issue](https://github.com/NousResearch/hermes-agent/issues/124739) after that reply. The same cleaner sits on the Weixin send path. I did not send a Weixin message.
 
-rodricksz4h5 opened [#124739](https://github.com/NousResearch/hermes-agent/issues/124739) after a reply that named a local CSV and then used the same path in `pandas.read_csv(...)`. The file went out as an attachment. The code sample arrived as `pandas.read_csv('')`. A URL that ended with the delivered path was truncated the same way. Weixin's send path calls the same helper; so does the shared adapter cleanup.
+They had reason to think the code would be left alone. The gateway skips a path that sits inside code, and it skips a path that is only the tail of an https URL. The note on that code says those samples are never mutilated.
 
-I ran `BasePlatformAdapter.extract_local_files` on current `origin/main` against a real CSV, without starting the gateway. The input had the path in prose, in inline code, and at the end of `https://cdn.example.com...`. One attachment came back. The cleaned text was:
+I ran the reply through the cleaner, against a real CSV, without starting the gateway. One attachment came back. The text that came with it was: Saved the data to . Load it with `pandas.read_csv('')`. Mirror https://cdn.example.com
 
-Saved the data to . Load it with `pandas.read_csv('')`. Mirror https://cdn.example.com
+The skip had done what it was written to do. It chose which paths to attach, and it left the code span and the URL off that list. Cleanup is a second pass. For each path it did attach, it deleted that string everywhere still left in the message. The code sample and the URL were still in the message, so they lost the path too.
 
-## The skip never reached cleanup
+The tests never built the reply a person sends. A path that appears only in code is skipped, so the delete never runs. A path that appears only inside a URL is never accepted, so the delete never runs. Both stay green. The mixed reply is the one that attaches the file and then walks the rest of the text.
 
-[`extract_local_files`](https://github.com/NousResearch/hermes-agent/blob/8c9fe964009096e46f44292d036c1e0ac33c3026/gateway/platforms/base.py#L3286) walks the reply with a path regex. A match inside a fenced or inline code span is `continue`. The docstring says those samples are never mutilated. A lookbehind is supposed to refuse `https://.../img.png`.
+The same file already deletes media tags by the span it matched, instead of wiping the string. [The open fix](https://github.com/NousResearch/hermes-agent/pull/124740) does that for file paths. I ran the same CSV through it. The path in the prose was gone. The code sample still had it. The URL still had it.
 
-Those rules only decide which paths get delivered. Cleanup is a second loop: for each accepted raw path, [`cleaned = cleaned.replace(raw, '')`](https://github.com/NousResearch/hermes-agent/blob/8c9fe964009096e46f44292d036c1e0ac33c3026/gateway/platforms/base.py#L3313-L3315). The skip does not run there. The lookbehind does not run there.
-
-[`extract_media`](https://github.com/NousResearch/hermes-agent/blob/8c9fe964009096e46f44292d036c1e0ac33c3026/gateway/platforms/base.py#L3270) in the same file already deletes only the tag spans it matched. `_delete_spans` is already in the module.
-
-The tests that were green never paired a prose hit with a remaining copy. A code-only path is skipped and never delivered, so replace never runs. A URL-only path is never accepted, so replace never runs. The mixed reply is the one that delivers the file and then walks the rest of the string.
-
-## Deleting the matched spans keeps the copies
-
-The open fix records the match spans and deletes those. I ran the same CSV through [PR #124740](https://github.com/NousResearch/hermes-agent/pull/124740): prose path gone, `pandas.read_csv` still had it, the HTTPS copy still had it.
+A guard that only runs on the way in will not save the later copies. If the next step still has the raw string, it will use it. A test of each rule alone will not show you that.
