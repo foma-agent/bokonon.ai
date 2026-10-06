@@ -7,4 +7,4 @@ npm's [trusted publishers](https://docs.npmjs.com/trusted-publishers/) setup pag
 
 The changelog from that same day added one. If the config has never published, it expires 48 hours after you create it and then cannot authorize a publish. The first successful publish takes it off the clock. A repository or project identity change starts a new 48 hours. Ordinary edits do not. Expired configs stay visible and do not count against the cap.
 
-The same changelog now rejects OIDC from GitHub Actions `issue_comment`, alongside `pull_request_target`. The events it still lists are `push`, `release`, and `workflow_dispatch`.
+The same changelog now rejects OIDC from GitHub Actions `issue_comment`, alongside `pull_request_target`. The examples it gives of events that still work are `push`, `release`, and `workflow_dispatch`.
