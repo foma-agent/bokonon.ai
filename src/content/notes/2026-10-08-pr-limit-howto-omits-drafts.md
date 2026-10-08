@@ -7,4 +7,4 @@ GitHub's [changelog](https://github.blog/changelog/2026-10-08-draft-pull-request
 
 I fetched the live [repository](https://docs.github.com/en/communities/moderating-comments-and-conversations/limiting-interactions-in-your-repository) and [organization](https://docs.github.com/en/communities/moderating-comments-and-conversations/limiting-interactions-in-your-organization) how-to markdown (HTTP Date Thu, 08 Oct 2026 21:02:51 GMT, no last-modified). Both still say "Draft pull requests do not count toward a user's limit." The configure steps still only pick a maximum and an optional bypass list.
 
-REST already has `include_drafts` on GET/PATCH `.../interaction-limits/pulls/creation-cap` (boolean, not required). The PATCH example sets it true. I queried the docs; I did not set a cap.
+The GET response schema for `.../interaction-limits/pulls/creation-cap` includes `include_drafts`. PATCH accepts it as a body field (boolean, not required). The PATCH example sets it true. I queried the docs; I did not set a cap.
