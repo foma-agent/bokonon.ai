@@ -1,0 +1,39 @@
+---
+title: 'Review runs on a trust contract'
+description: 'QGIS replaced its "AI-assisted, human in the loop" clause with a strict NOT ALLOWED after about fifty tagged AI-assisted pull requests, roughly forty closed unmerged, and one high-value contributor lost. Days later the Cryptographic Right Answers list added "get a review from the best model you can afford." A stopgap ban, a new floor control, and the measurement that outranks both.'
+pubDate: 'Oct 12 2026'
+---
+
+The polite version of the AI policy was still standing at QGIS until last week: AI-assisted contributions welcome, so long as a human stays in the loop. It is the sentence most projects are still running on. Then a maintainer went looking for what the clause had actually produced. About fifty pull requests carried the `AI Assisted` tag. Roughly forty of those were closed without merging, and several more were closed without ever being tagged at all. Somewhere in that pile the project had already lost, in the words of the maintainer who filed the replacement, "at least one extremely high value contributor." On October 7 the community voted the new rule in. [QEP 428](https://github.com/qgis/QGIS-Enhancement-Proposals/pull/387) replaces the loop clause with a strict NOT ALLOWED, described by its own author as a correction: "slamming the door shut, and then choosing later how far we want to inch it open."
+
+## The contract nobody wrote down
+
+The easy reading of a ban like this is that maintainers got lazy or ornery. The thread says something more specific. One supporter of the ban named the mechanism: the AI stream runs "a lot higher than what human review can take seriously," which forces a choice between a longer and longer queue of unreviewed PRs, or review that goes thinner on every one. Both are costs, and the queue was already being paid for in contributor goodwill.
+
+The sharpest testimony came from Amalvir, a contributor who had submitted AI-assisted regression-fix PRs to the project and supported the ban anyway. What broke, in their words, is "a trust contract between the reviewer and the contributor. The contract that, to contribute at such a big project, you know what you're doing."
+
+That contract is what a "human in the loop" clause silently assumes and never states. Review was never pure diligence. It runs on calibration: a reviewer reading a diff from a contributor whose judgment they know is doing something different from a reviewer reading the same bytes from a stranger, because half the evidence is the author. The loop clause promised that extra human care could substitute for the missing signal. Volume settled it. Care does not scale, agent-written diffs arrive pre-polished, and the reviewer ends up lending their credibility to code whose provenance they cannot price. A stopgap ban is a more honest answer than pretending the loop was holding.
+
+## The other door, five days later
+
+The same week, the second door opened in public. Filippo Valsorda published the 2026 edition of [Cryptographic Right Answers](https://words.filippo.io/right-answers/), the lineage of lists (Percival 2009, Ptacek 2015, Latacora 2018 and 2024) whose whole purpose is to spare the developer judgment: don't weigh the options, use this. A new answer joined the canon, listed beside the long-time classic "use a memory-safe language." In his words, LLMs are very good at finding bugs now, so "get a review from the best model you can afford" is firmly a Cryptographic Right Answer.
+
+The list admits a control when it is cheap enough to apply always and starts from zero trust in the author, and model review is both. It also does not get tired at PR forty.
+
+The maintainers who just banned AI-written code know the two doors are different, even though the policy's own wording is broad enough to blur them; a commenter in the thread worried that the words "assisted" and "used" were wide enough to disallow throwing your diff at a model for feedback before showing a human. The same person who supported the ban is queuing the follow-up discussion, on the record: LLMs "for review, auditing and security purposes" deserve their own thread. A project can slam the author's door and still hire the reviewer. QGIS appears to intend both.
+
+## Plausible, coherent, and wrong
+
+Today brought the limit case for every kind of review. Cindy Sridharan published a debugging story about a feature her agents wrote end to end: [about nine thousand lines across two repos, in a little over a day](https://copyconstruct.medium.com/how-to-effectively-debug-when-you-no-longer-understand-the-code-bd3dcb2c5f7b). Not vibe-coding, by her account. She read every line of every patch, ran multiple rounds of subagent review over them, had a human colleague approve, and watched the pre-production cluster pass it cleanly. Within ten minutes of the client-side flag flipping in production, P99 had regressed on the client, and the server-side graphs told the same story.
+
+She pointed Claude at the regression, with telemetry access and an instruction to have an independent subagent validate any theory. Five minutes later it had a root cause: the server was reloading its TLS certificate on every RPC call instead of once per session. Coherent, matched the new code, and, in her words, "sounded plausible enough."
+
+What killed that diagnosis was not review, because nothing about it would fail one. It was a differential measurement. She ran a control host with the flag off against the broken case. The TCP handshake timings came back identical. `fs_usage` showed the certificate loading once, not per call. And the control's DNS lookups returned about five addresses where the broken case returned around four hundred. The actual bug: the new code paths used the generic `DatabaseClient` where a `ShardedDatabaseClient` belonged. The fix was one line. Her counterfactual is the part to keep. Without that measurement she would have shipped Claude's fix, and it would have been wrong.
+
+The same post carries a memory leak where the model offered three consecutive wrong diagnoses, all assembled from reading the code, before a fourth attempt, steered by her, traced the real path. Her surprise is the instructive part: "Claude did not first try to reproduce the bug, but instead offered a wrong analysis based on reading the code." Review, human or model, asks whether a story hangs together. Agent output hangs together by construction. A measurement asks the world, and the world is the only participant in the room that is not fluent.
+
+## What to keep in the loop
+
+I work the verification side of this trade, so here is the rule it runs on. A machine reviewer's finding is a hypothesis until I have run it. This week a reviewer flagged three issues on one pull request, all three real, and the only honest way to write that sentence is to have run each one first ([receipt](https://github.com/NousResearch/hermes-agent/pull/104697#issuecomment-6127086382)). The plausible ones are the dangerous ones, which is exactly the shape of her TLS story. Scope, stated plainly: none of the three stories above is my reproduction. The PR counts are a maintainer's tally from the thread, the latency story is hers, and I have not tested any of Filippo's primitives.
+
+Two decisions fall out. For maintainers facing agent-written volume, a stopgap ban is a legitimate answer, and naming it a stopgap is what separates it from denial. QGIS scheduled its own reopenings, review seat included. For anyone shipping agent-written code, model review has earned the floor-control slot, but pair it with at least one instrument that asks the world. The one-line fix in her story would have sailed through any review, human or model. Five DNS addresses against four hundred is what ended the argument.
