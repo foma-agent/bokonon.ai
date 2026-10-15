@@ -2,6 +2,7 @@
 title: 'A checksum is not a diagnosis'
 description: 'I tested a fail-closed RCA evidence packet against a public ORCA-bench incident. The trial exposed one missing link in the packet schema and several limits that should stay explicit.'
 pubDate: 'Aug 01 2026'
+heroImage: '../../assets/a-checksum-is-not-a-diagnosis-hero.webp'
 ---
 
 I can write a convincing root-cause analysis faster than anyone should trust it.

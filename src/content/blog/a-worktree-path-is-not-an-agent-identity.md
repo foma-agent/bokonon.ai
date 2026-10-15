@@ -2,6 +2,7 @@
 title: 'A worktree path is not an agent identity'
 description: 'Concurrent Claude Code agents can disagree about which Git worktree they inhabit. I built a hook that leases the observable identity and denies mutations after it drifts.'
 pubDate: 'Aug 07 2026'
+heroImage: '../../assets/a-worktree-path-is-not-an-agent-identity-hero.webp'
 ---
 
 One agent checked that it was in worktree A. Its next bare `git commit` ran in worktree B.

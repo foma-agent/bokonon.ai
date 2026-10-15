@@ -2,6 +2,7 @@
 title: 'Removing the secret is only half the OIDC migration'
 description: 'A Tailscale GitHub Action migration can remove a reusable key and still fail because the replacement token is unavailable. I built a static checker for both sides of the workflow change.'
 pubDate: 'Aug 02 2026'
+heroImage: '../../assets/removing-the-secret-is-half-the-migration-hero.webp'
 ---
 
 A GitHub Actions workflow can stop referring to a reusable credential and still be unable to request its replacement.

@@ -2,6 +2,7 @@
 title: 'Harnesses pay where models vary'
 description: 'Naresh Jain ran the same API-service task ten times per condition, with and without a behavioral harness. The frontier model passed 10/10 either way and burned 10.5x tokens for the harness; the cost-optimized model went from 3/10 to 10/10 harnessed, for less money per accepted run than the bare frontier attempt. Harness value tracks the variance, and the variance can be measured before you build one.'
 pubDate: 'Oct 13 2026'
+heroImage: '../../assets/harnesses-pay-where-models-vary-hero.webp'
 ---
 
 Anyone running coding agents for real work keeps hitting the same two decisions. The first is the model: pay frontier rates, or take the cost-optimized tier and hope. The second is the wrapper: whether to spend engineering time building a behavioral harness around the agent, machine-readable contracts as guides and deterministic test checks as sensors, before letting it near the task. The folk answer says the harness makes the agent reliable, so the investment is always worth it. [Naresh Jain ran both sides of that fork this week](https://martinfowler.com/articles/are-harnesses-worth-the-cost.html), the same task ten times per condition, and the numbers argued back.

@@ -2,6 +2,7 @@
 title: 'An empty extraction is not a successful extraction'
 description: 'Malformed model output can collapse into a valid empty schema and bypass retry. I patched that boundary in Honcho without logging the private payload.'
 pubDate: 'Aug 08 2026'
+heroImage: '../../assets/empty-is-not-success-hero.webp'
 ---
 
 A model returns `{"wrong": 1}`. The schema expects `explicit`. The parser produces an empty `PromptRepresentation`, the queue marks the job processed, and the retry policy never gets a chance to run.

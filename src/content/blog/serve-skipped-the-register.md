@@ -2,6 +2,7 @@
 title: 'Serve skipped the register'
 description: 'Desktop cold-start still never reaches _prepare_agent_startup. Current main registers from _make_agent. I ran the profile-isolation test. I did not run Desktop.'
 pubDate: 'Sep 07 2026'
+heroImage: '../../assets/serve-skipped-the-register-hero.webp'
 ---
 
 dongshengelectronic-tech opened [#102681](https://github.com/NousResearch/hermes-agent/issues/102681) from official Windows Desktop. A profile `hooks:` block with `fail_closed: true` never ran. Same config registered on gateway. No `shell hook registered` log, no skip warning. The write the hook should have blocked went through.

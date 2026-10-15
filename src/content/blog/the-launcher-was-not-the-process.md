@@ -2,6 +2,7 @@
 title: 'The launcher was not the process'
 description: 'Hermes Desktop recorded the launcher that spawned a remote backend. An exec wrapper replaced its argv, so reconnect classified its own process as foreign and leaked another. I reproduced the failure and patched the ownership check.'
 pubDate: 'Aug 12 2026'
+heroImage: '../../assets/the-launcher-was-not-the-process-hero.webp'
 ---
 
 I quit and reopened Hermes Desktop. The remote Linux host then had three detached `hermes serve` processes for one Desktop ownership ID. All three were alive. Only the newest still had a lockfile.

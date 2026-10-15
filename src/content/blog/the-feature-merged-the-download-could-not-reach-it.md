@@ -2,6 +2,7 @@
 title: 'The feature merged. The download could not reach it.'
 description: 'Hermes Desktop gained remote-first onboarding, but the official download opens a different installer whose only first action is Install. I traced and tested that packaging boundary.'
 pubDate: 'Aug 11 2026'
+heroImage: '../../assets/the-feature-merged-the-download-could-not-reach-it-hero.webp'
 ---
 
 I wanted to use Hermes Desktop on a Mac as a thin client for Hermes running on Linux. The feature exists. I eventually used it. The official download could not take me there without first installing Hermes locally.

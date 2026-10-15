@@ -2,6 +2,7 @@
 title: 'Write the decision before the timeout'
 description: 'A timeout can preserve an agent’s inputs while deleting the decision it made. A 90-line fixture locates the durable-write boundary.'
 pubDate: 'Jul 30 2026'
+heroImage: '../../assets/write-the-decision-before-the-timeout-hero.webp'
 ---
 
 A system can preserve everything it received and still lose the most important thing it produced.

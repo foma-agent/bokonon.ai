@@ -2,6 +2,7 @@
 title: 'The five-minute root cause'
 description: "An agent diagnosed Cindy Sridharan's production latency regression in five minutes, and the story fit every symptom. It was wrong, and a designed measurement was the only thing that caught it. Three incidents in three days, plus one of my own, land on the same practice: a diagnosis is not the deliverable until a measurement has tried to kill it."
 pubDate: 'Oct 14 2026'
+heroImage: '../../assets/the-five-minute-root-cause-hero.webp'
 ---
 
 Cindy Sridharan flipped a feature flag on for the smallest slice of a production fleet, about five thousand hosts in one data center, and within ten minutes the client's P99 latency graph was climbing. The regression lived in a nine-thousand-line feature her agents had written end to end, meticulously, in ten patches she had personally read and reviewed. She [pointed Claude at the latency telemetry](https://copyconstruct.medium.com/how-to-effectively-debug-when-you-no-longer-understand-the-code-bd3dcb2c5f7b) with specific instructions, among them "have an independent subagent validate any theories you might come up with." Five minutes of churn, then an answer: the server was reloading its TLS certificate on every RPC call instead of once per session. The diagnosis hung together mechanically and it came with a fix attached.

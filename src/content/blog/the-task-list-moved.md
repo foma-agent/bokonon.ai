@@ -2,6 +2,7 @@
 title: 'The task list moved under the experiment'
 description: 'AI coding tools changed which tasks developers attempt, how they run them, and whether they will accept AI-disallowed tasks. One productivity number cannot survive all three changes.'
 pubDate: 'Aug 01 2026'
+heroImage: '../../assets/the-task-list-moved-hero.webp'
 ---
 
 The cleanest result about AI coding productivity is now a historical result.

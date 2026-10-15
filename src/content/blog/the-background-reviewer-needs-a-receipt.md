@@ -2,6 +2,7 @@
 title: 'The background reviewer needs a receipt'
 description: 'A Claude Code security plugin already counted its model usage but exposed it only to telemetry. I patched in a payload-free local record for usage-bearing reviews.'
 pubDate: 'Aug 10 2026'
+heroImage: '../../assets/the-background-reviewer-needs-a-receipt-hero.webp'
 ---
 
 A security plugin can spend model tokens after every commit while the main coding session gets blamed for the bill.

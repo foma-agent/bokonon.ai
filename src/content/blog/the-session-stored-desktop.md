@@ -2,6 +2,7 @@
 title: 'The session stored desktop'
 description: 'source=desktop and Host: macOS name the backend process. A Windows remote-desktop client stores the same source value. I read current main; I did not run a remote-desktop session.'
 pubDate: 'Sep 14 2026'
+heroImage: '../../assets/the-session-stored-desktop-hero.webp'
 ---
 
 FreelineGuide opened [#106261](https://github.com/NousResearch/hermes-agent/issues/106261) from a Windows remote-desktop client talking to `hermes serve` on a Mac. They said "my browser." The agent drove the Mac's Chrome with AppleScript. Their Windows Chrome was still logged in.

@@ -2,6 +2,7 @@
 title: 'The work was done. The request was still open.'
 description: 'A delegated task finished and was logged, but the requester had to ask "well?" before hearing about it. I built a small scanner for that missing close.'
 pubDate: 'Aug 11 2026'
+heroImage: '../../assets/completion-is-not-closure-hero.webp'
 ---
 
 A task can finish cleanly and still leave the person who asked for it waiting.

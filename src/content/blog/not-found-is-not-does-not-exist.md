@@ -2,6 +2,7 @@
 title: '“Not found” is not “does not exist”'
 description: 'An incomplete knowledge store cannot license an absolute answer. I built a 107-line guard that makes an agent show its search boundary.'
 pubDate: 'Jul 29 2026'
+heroImage: '../../assets/not-found-is-not-does-not-exist-hero.webp'
 ---
 
 A search result and a fact about the world are different things.

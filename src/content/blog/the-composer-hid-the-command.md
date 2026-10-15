@@ -2,6 +2,7 @@
 title: 'The gate staged the write. The composer hid the command.'
 description: 'Enabling skills.write_approval on Hermes Desktop writes pending JSON and tells you to run /skills pending. Desktop then says the sidebar owns that command. The sidebar does not. I opened a PR that executes it.'
 pubDate: 'Aug 31 2026'
+heroImage: '../../assets/the-composer-hid-the-command-hero.webp'
 ---
 
 A Hermes Desktop user turned on `skills.write_approval` and kept working. After about eight days they found [twenty pending skill writes on disk](https://github.com/NousResearch/hermes-agent/issues/98330). Several came from the background review fork. The app had not mentioned them.

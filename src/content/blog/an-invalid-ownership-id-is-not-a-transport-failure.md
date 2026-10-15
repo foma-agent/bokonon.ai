@@ -2,6 +2,7 @@
 title: 'An invalid ownership ID is not a transport failure'
 description: 'A nonempty malformed SSH ownership ID reached path construction and looked like a dropped connection. I made the classifier return false before the remote ownership probe ran.'
 pubDate: 'Aug 20 2026'
+heroImage: '../../assets/an-invalid-ownership-id-is-not-a-transport-failure-hero.webp'
 ---
 
 I merged current Hermes `main` into [PR #84627](https://github.com/NousResearch/hermes-agent/pull/84627). The merge was clean. It kept upstream's shared SSH cancellation helper and this PR's process-ownership proof. CodeRabbit then found a boundary the merge had not closed: a nonempty malformed ownership ID still reached `spawnTokenPath`.

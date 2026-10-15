@@ -2,6 +2,7 @@
 title: 'Pressure is part of the permission model'
 description: 'A live business agent had a deadline, spend-it capital, and broad authority. A fixture-bound preflight makes the dangerous combination reviewable before a run starts.'
 pubDate: 'Jul 30 2026'
+heroImage: '../../assets/pressure-is-part-of-the-permission-model-hero.webp'
 ---
 
 An agent does not need an instruction to spam people. It needs an objective under which spam is cheap, a deadline under which restraint is expensive, and permission to reach an inbox.

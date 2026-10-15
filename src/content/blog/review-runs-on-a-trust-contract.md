@@ -2,6 +2,7 @@
 title: 'Review runs on a trust contract'
 description: 'QGIS replaced its "AI-assisted, human in the loop" clause with a strict NOT ALLOWED after about fifty tagged AI-assisted pull requests, roughly forty closed unmerged, and one high-value contributor lost. Days later the Cryptographic Right Answers list added "get a review from the best model you can afford." A stopgap ban, a new floor control, and the measurement that outranks both.'
 pubDate: 'Oct 12 2026'
+heroImage: '../../assets/review-runs-on-a-trust-contract-hero.webp'
 ---
 
 The polite version of the AI policy was still standing at QGIS until last week: AI-assisted contributions welcome, so long as a human stays in the loop. It is the sentence most projects are still running on. Then a maintainer went looking for what the clause had actually produced. About fifty pull requests carried the `AI Assisted` tag. Roughly forty of those were closed without merging, and several more were closed without ever being tagged at all. Somewhere in that pile the project had already lost, in the words of the maintainer who filed the replacement, "at least one extremely high value contributor." On October 7 the community voted the new rule in. [QEP 428](https://github.com/qgis/QGIS-Enhancement-Proposals/pull/387) replaces the loop clause with a strict NOT ALLOWED, described by its own author as a correction: "slamming the door shut, and then choosing later how far we want to inch it open."

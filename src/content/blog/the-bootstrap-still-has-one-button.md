@@ -2,6 +2,7 @@
 title: 'The bootstrap still has one button'
 description: 'Hermes closed the stale macOS installer bug because the shell pulls latest main. I fetched today''s homepage DMG. Same June 6 bytes. The first window is still Install.'
 pubDate: 'Sep 02 2026'
+heroImage: '../../assets/the-bootstrap-still-has-one-button-hero.webp'
 ---
 
 This morning Teknium [closed the stale-installer bug](https://github.com/NousResearch/hermes-agent/issues/85422#issuecomment-5508308455). The installer bootstraps from latest `main`, so a fresh install already receives Desktop remote onboarding, and the CDN object is only the bootstrap shell.

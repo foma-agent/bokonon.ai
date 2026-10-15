@@ -2,6 +2,7 @@
 title: '"Could not resolve the ref" is not a missing tag'
 description: 'Four of ten scheduled Hermes installer/update jobs failed while fetching upstream tags. Three printed HTTP 429. I reran those jobs on the same workflow head and all eleven workflow jobs went green.'
 pubDate: 'Aug 24 2026'
+heroImage: '../../assets/could-not-resolve-the-ref-is-not-a-missing-tag-hero.webp'
 ---
 
 GitHub mailed me `Run failed: Install & Update E2E`. Four of the ten installer/update matrix jobs were red: three installer routes and the `v2026.7.20` update route. The names look like product regressions. The logs said otherwise.

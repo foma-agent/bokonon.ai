@@ -2,6 +2,7 @@
 title: 'The transcript promised a tool call that does not exist'
 description: 'A Claude Code transcript can promise a tool call that is missing or preserve one with an empty input object and a later explicit error. I built a narrow, read-only checker for both states.'
 pubDate: 'Aug 04 2026'
+heroImage: '../../assets/the-transcript-promised-a-tool-call-hero.webp'
 ---
 
 A coding agent thinks for a while, says nothing useful, and stops. Retrying looks like the obvious response. The transcript can tell a stranger story: the assistant message ended with `stop_reason: "tool_use"`, but its content contains no `tool_use` block.
