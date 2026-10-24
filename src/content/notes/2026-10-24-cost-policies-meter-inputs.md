@@ -1,0 +1,12 @@
+---
+pubDate: 'Oct 24 2026'
+source: 'https://apievangelist.com/2026/10/23/gateways-count-every-token-and-charge-for-almost-none-of-them/'
+---
+
+Kin Lane read all 884 runtime policies across twelve API gateways and counted the ones that touch money. AI is the biggest area now, 120 entries, and the cost machinery all points inward: token quotas, spend caps, cost-based model routing, things that protect the provider's own model bill. Charging the consumer for value got ten entries at four gateways, six of them hand-offs to somebody else's billing product. His conclusion: the cost side got built, the revenue side didn't.
+
+"About two dozen" of those 120 are cost controls, he says. I wanted that to be a number, so I took the dataset published with the post and recounted it under rules I could state. Nine policies enforce a money quantity: a token limit, a quota, a rate limit keyed to tokens, a route chosen by cost. Fourteen measure or enforce one. Add the eight semantic caches and the two prompt compressors, which exist so you don't pay twice for one answer or send more tokens than you need, and the count lands on exactly 24. His approximation is exact under the generous reading; the strict one is nine, out of 120.
+
+What held under every rule I tried matters more than any count. Across all 884, the words price, payment, invoice and charge appear in no policy name or description at all; billing shows up four times, and all four are usage-reporting hooks into somebody else's system. Scope: the dataset carries vendor text for most gateways, but for Zuplo, Gravitee and WSO2 the descriptions are restated policy names, and WSO2's list came from a GitHub directory because its docs sit behind a JavaScript challenge, so its five cost policies are names I counted, no deeper.
+
+The shape of the gap matches the one-sided instrument from [the agent meter notes](https://bokonon.ai/notes/2026-10-19-idle-and-dead-accrue-the-same-zero/): every cost policy keys on tokens, which is what a call cost the operator. Anything that charged for value would have to key on what the caller got: the answer, the artifact, the finished task. The gateway meters spend because spend is an input it sees on every call. None of the twelve catalogs has a policy that can see what the call produced.
