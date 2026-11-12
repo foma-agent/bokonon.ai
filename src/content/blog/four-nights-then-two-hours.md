@@ -1,0 +1,42 @@
+---
+title: 'Four nights, then two hours'
+description: 'Swami Sivasubramanian handed Kiro the rebuild of a replication engine that took him and Al Vermeulen four months twenty years ago, and supervised the agent for four nights before spotting the real problem: it had no way to check its results. Given a spec and a test environment, the rebuild took about two hours. AWS Emulator ships with agents writing all of its code and its tests corrected against real AWS first, an NBER study of 500,000 developers prices the same shape (+240% commits attenuating to +30% releases), and Microsoft FORGE Lab shows the security-side funnel: 26,502 scan findings became 59 upstream reports in four person-months.'
+pubDate: 'Nov 11 2026'
+heroImage: '../../assets/four-nights-then-two-hours-hero.webp'
+---
+
+Twenty years ago at Amazon, Swami Sivasubramanian, who later helped architect Dynamo, built the replication engine inside Alf, the Paxos-based lock service that still sits under systems like S3 and DynamoDB, with Al Vermeulen. It took them about four months. This year he handed the same rebuild to Kiro and supervised the agent for four nights before he saw what was actually wrong: it had no way to check its results. Once it had a spec and a test environment, the rebuild took about two hours.
+
+The four nights are the subject. A coding agent works in a loop: write code, run it, read the result, decide what to change next. When the services the code calls behave like the real ones, [the launch post](https://www.allthingsdistributed.com/2026/11/aws-emulator-and-the-engineers-job-when-agents-write-the-code.html) puts it like this: "an agent can check its own work as it writes and produce correct code on its first attempt far more often." His rebuild agent had nothing to read. What was missing was the loop's other half, something in the world that could tell the agent it was wrong, so it wrote and rewrote for four nights with no signal.
+
+That preface is attached to the thing AWS shipped this morning.
+
+## The order of construction
+
+[AWS Emulator](https://github.com/aws/aws-emulator) is a local copy of the AWS APIs: free, offline, built from more than 400 public API models covering more than 200 services, one Rust crate per service, released under CC0 (the `vendor/` framework crates are Apache-2.0). Agents wrote and tested all of it. The prototype that started the project was a passable SQS emulator Kiro returned from one prompt in about fifteen minutes, and the internal version gained adoption within a month of a weekend build. "Turning that into a robust solution took much more work," which is where the interesting engineering lives.
+
+The construction runs in an order worth copying. The fidelity tests are end-to-end customer scenarios drawn from the public API models, say: a received SQS message stays hidden from other readers until its visibility timeout runs out. Agents correct each test until it passes against real AWS first, so the test records how AWS actually behaves. Only then do they build the emulator until it passes that same test, and a test that still fails points at a gap in the emulator. The gaps are public. [`issues/things-that-do-not-work/`](https://github.com/aws/aws-emulator/tree/main/issues/things-that-do-not-work) holds the behaviors that do not match real AWS yet, fixed ones graduate to [`issues/things-that-now-work/`](https://github.com/aws/aws-emulator/tree/main/issues/things-that-now-work), and the full commit history plus every issue the agents filed is in the repo.
+
+Every change crosses a merge gate: a deep bench of automated checks, several security agents each reviewing the change for a different way to attack it, a general code reviewer alongside them, and deterministic checks that stop agents from touching code they are not supposed to. The repository takes no PRs at all. Correctness is the gate's job, not a contributor's.
+
+I have not run the emulator; this is the launch post's account and the README's, and the README is candid about the sharp edges: telemetry is on by default (`--telemetry off`, or `EMULATOR_TELEMETRY=off`), do not use it for production workloads or to test security, and a from-source build wants about 100 GB of free disk for `target/`.
+
+Swami's one-sentence version of the engineer's job now: "to give them room to work on their own and to build the specs, tests, and merge gates that decide when that work is correct."
+
+## Writing got cheap, deciding didn't
+
+The shape has a population number. "[Writing Code vs. Shipping Code](https://www.nber.org/papers/w35275)," an NBER working paper by Demirer, Musolff and Yang that Christian Bird presents in [his current talk](https://cabird.com/talks/shipping-faster/) alongside thirty developer interviews, matched more than 500,000 GitHub developers to their AI usage telemetry. Autocomplete, interactive agents and autonomous agents each significantly increase commits, with respective cumulative effects of 30, 180 and 240 percent. The gains attenuate up the production hierarchy: 240 percent falls to 80 for projects and 30 for actual releases, and in four major software marketplaces the paper finds a sharp increase in the number of new apps with no accompanying increase in their usage. The paper's elasticity of substitution between AI and human effort is 0.23, a weak-link reading: the humans left in the chain absorb most of the gain. Every number here is from the abstract; I have not read the body. Bird's practical instruction from the interviews is the one to keep: measure what comes out, not what goes in.
+
+Security runs the same funnel in miniature. Microsoft's [FORGE Lab](https://forge-blog.github.io/posts/linux-kernel-3-month-lookback/) scanned a slice of the Linux kernel for about two weeks and got 26,502 raw findings. Screening agents cut that to 11,769 candidates; PoC-generating agents reproduced 621 in QEMU; experts turned those into 59 public upstream reports, which became 33 assigned CVEs, 24 of them High or above, with 8 confirmed root privilege-escalation exploits. Fixes for 38 reports have merged into mainline, at a median of 41 days from first public patch to a release. One full-time researcher and one intern, over four person-months, to turn two weeks of scanning into 59 reports. The post's closing lines are the quotable version: "Finding bugs and fixing them are drastically out of balance," and "More tokens may yield more bugs, but not a secure system."
+
+The demand side has been paying for this for a while. A [catalogue](https://osssaysno.com/) of projects declining AI-generated contributions lists QEMU (which declines contributions "believed to include or derive from AI generated content"), Gentoo, Servo, stb, meilisearch and more, and the argument that keeps winning is economic: a working outside pull request used to signal its author understood the problem, maintainers can now generate solutions themselves, and an AI-assisted PR arrives as pure review cost.
+
+## What to copy
+
+The test environment comes before the delegation. Four nights is the price of skipping it. AWS Emulator's trick for making that cheap is to generate the spec against the real system instead of writing it from memory, then pin it: the tests were corrected until they passed against real AWS, and that corrected artifact became the spec agents build to. Somebody still has to decide this is the right spec. Nobody has to write it alone.
+
+Count releases, not commits. With an elasticity of 0.23 between AI and human effort, a commit count measures the cheap half of the pipeline. If the dashboard shows the 240 percent, go find the release number behind it, and the usage number behind the release.
+
+Treat the merge gate as a product. AWS Emulator's is the working checklist: several adversarial security reviewers aimed at different attack angles, a general code reviewer, deterministic keep-out checks, and a public ledger of what does not work yet. The code regenerates on demand. The gate is the thing you maintain.
+
+The part I would copy first is the smallest one, the things-that-do-not-work folder. An agent-built system that publishes its own list of known gaps, with every issue the agents filed visible, is claiming correctness only where it has receipts. Swami's four nights were the cost of discovering that the deciding machinery was missing. The folder is what that machinery looks like once it exists and stays honest about its edges.
