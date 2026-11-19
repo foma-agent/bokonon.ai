@@ -1,0 +1,146 @@
+"""Local test of a PR watcher, not a GitHub client. Python 3.10+; no network.
+
+The fake PR persists its state separately from its live-only socket stream.
+A and B stand for commit IDs. Each case starts in a fresh directory.
+"""
+
+from contextlib import closing
+import json
+from pathlib import Path
+import select
+import socket
+import sqlite3
+from tempfile import TemporaryDirectory
+
+
+class PR:
+    def __init__(self, directory):
+        self.db = Path(directory) / "pr.sqlite"
+        self.sender = None
+        self.receiver = None
+        self.input = None
+        with closing(sqlite3.connect(self.db)) as db, db:
+            db.executescript("""
+                CREATE TABLE pr (head TEXT NOT NULL);
+                INSERT INTO pr VALUES ('A');
+                CREATE TABLE suites (
+                    head TEXT NOT NULL, name TEXT NOT NULL,
+                    PRIMARY KEY (head, name)
+                );
+            """)
+
+    def attach(self, *, hear_head_changes=True):
+        assert self.sender is None
+        self.hear_head_changes = hear_head_changes
+        self.sender, self.receiver = socket.socketpair()
+        self.receiver.settimeout(2)
+        self.input = self.receiver.makefile("rb")
+
+    def disconnect(self):
+        if self.sender is not None:
+            self.sender.close()
+            self.input.close()
+            self.receiver.close()
+            self.sender = self.receiver = self.input = None
+
+    def emit(self, kind, head, suite=None):
+        if self.sender is not None:
+            event = {"kind": kind, "head": head, "suite": suite}
+            self.sender.sendall(json.dumps(event).encode() + b"\n")
+
+    def quiet(self):
+        return not select.select([self.receiver], [], [], 0)[0]
+
+    def next_event(self):
+        event = json.loads(self.input.readline())
+        return event["kind"], event["head"], event["suite"]
+
+    def advance(self, head="B"):
+        with closing(sqlite3.connect(self.db)) as db, db:
+            db.execute("UPDATE pr SET head = ?", (head,))
+        if self.sender is not None and self.hear_head_changes:
+            self.emit("head", head)
+
+    def pass_suite(self, name):
+        with closing(sqlite3.connect(self.db)) as db, db:
+            head = self.current_head()
+            db.execute("INSERT INTO suites VALUES (?, ?)", (head, name))
+        self.emit("success", head, name)
+
+    def current_head(self):
+        with closing(sqlite3.connect(self.db)) as db:
+            return db.execute("SELECT head FROM pr").fetchone()[0]
+
+    def passed_suites(self, head):
+        with closing(sqlite3.connect(self.db)) as db:
+            return {row[0] for row in db.execute(
+                "SELECT name FROM suites WHERE head = ?", (head,)
+            )}
+
+
+def reconcile(pr, after_head_read=lambda: None):
+    for attempt in range(3):
+        head = pr.current_head()
+        if attempt == 0:
+            after_head_read()  # deterministic fault injection between the two reads
+        ready = {"build", "test"} <= pr.passed_suites(head)
+        if pr.current_head() == head:
+            return head, ready
+        # The read went stale. Retry now, even if no further event arrives.
+    raise RuntimeError("the head kept changing while checking readiness")
+
+
+def during_disconnect(pr):
+    pr.attach()
+    last_seen = reconcile(pr)
+    assert last_seen == ("A", False)
+    pr.disconnect()
+    pr.advance()
+    pr.pass_suite("build")
+    pr.pass_suite("test")
+    pr.attach()
+    assert pr.quiet()  # no unrelated later event to wake the watcher
+    assert last_seen == ("A", False)
+    assert reconcile(pr) == ("B", True)
+    print("reconnect: no replay; A waiting -> B ready on attachment read")
+
+
+def queued_success(pr):
+    pr.attach()
+    pr.pass_suite("build")  # A is still head when the success is sent
+    pr.advance()            # B is head before the watcher reads the bytes
+    pr.pass_suite("build")
+    assert pr.next_event() == ("success", "A", "build")
+    assert reconcile(pr) == ("B", False)
+    assert pr.next_event() == ("head", "B", None)
+    assert pr.next_event() == ("success", "B", "build")
+    assert reconcile(pr) == ("B", False)
+    pr.pass_suite("test")
+    assert pr.next_event() == ("success", "B", "test")
+    assert reconcile(pr) == ("B", True)
+    print("queued success: A build ignored; only B build + B test makes B ready")
+
+
+def changes_during_read(pr):
+    for head in ("A", "B"):
+        pr.advance(head)
+        pr.pass_suite("build")
+        pr.pass_suite("test")
+    pr.advance("A")
+    pr.attach(hear_head_changes=False)
+    # Reapply an already-checked head while the watcher reads A's checks.
+    # Nothing new finishes and this watcher isn't subscribed to head changes.
+    observed = reconcile(pr, after_head_read=pr.advance)
+    assert pr.current_head() == "B" and pr.quiet()
+    assert observed == ("B", True), observed
+    print("change during lookup: no event; immediate retry finds green B")
+
+
+if __name__ == "__main__":
+    for case in (during_disconnect, queued_success, changes_during_read):
+        with TemporaryDirectory(prefix="pr-watch-") as tmp:
+            pr = PR(tmp)
+            try:
+                case(pr)
+            finally:
+                pr.disconnect()
